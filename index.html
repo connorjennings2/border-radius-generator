@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Border Radius Generator</title>
+<style>
+body{font-family:Arial;background:#fdf2f8;padding:25px}
+main{max-width:550px;margin:auto;background:white;padding:30px;border-radius:16px}
+label{display:block;margin-top:15px}
+input{width:100%}
+#preview{width:200px;height:180px;background:linear-gradient(135deg,#db2777,#7c3aed);margin:30px auto}
+#code{background:#fce7f3;padding:15px;border-radius:8px;overflow-wrap:anywhere}
+button{background:#db2777;color:white;padding:12px 20px;border:0;border-radius:7px;cursor:pointer}
+</style>
+</head>
+<body>
+<main>
+<h1>Border Radius Generator</h1>
+<p>Create custom rounded corners for CSS.</p>
+<label>Top Left</label>
+<input id="tl" type="range" min="0" max="100" value="20" oninput="update()">
+<label>Top Right</label>
+<input id="tr" type="range" min="0" max="100" value="20" oninput="update()">
+<label>Bottom Right</label>
+<input id="br" type="range" min="0" max="100" value="20" oninput="update()">
+<label>Bottom Left</label>
+<input id="bl" type="range" min="0" max="100" value="20" oninput="update()">
+<div id="preview"></div>
+<p id="code"></p>
+<button onclick="copyCode()">Copy CSS</button>
+<p id="status"></p>
+</main>
+<script>
+function update(){
+ const radius=["tl","tr","br","bl"].map(
+ id=>document.getElementById(id).value+"px").join(" ");
+ document.getElementById("preview").style.borderRadius=radius;
+ document.getElementById("code").textContent="border-radius: "+radius+";";
+ document.getElementById("status").textContent="";
+}
+async function copyCode(){
+ try{
+  await navigator.clipboard.writeText(document.getElementById("code").textContent);
+  document.getElementById("status").textContent="CSS copied!";
+ }catch{
+  document.getElementById("status").textContent="Please copy manually.";
+ }
+}
+update();
+</script>
+</body>
+</html>
