@@ -2,49 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Border Radius Generator</title>
 <style>
-body{font-family:Arial;background:#fdf2f8;padding:25px}
-main{max-width:550px;margin:auto;background:white;padding:30px;border-radius:16px}
-label{display:block;margin-top:15px}
+body{font-family:Arial;background:#eff6ff;padding:25px}
+main{max-width:550px;margin:auto;background:white;padding:25px;border-radius:15px}
+label{display:block;margin:15px 0 5px}
 input{width:100%}
-#preview{width:200px;height:180px;background:linear-gradient(135deg,#db2777,#7c3aed);margin:30px auto}
-#code{background:#fce7f3;padding:15px;border-radius:8px;overflow-wrap:anywhere}
-button{background:#db2777;color:white;padding:12px 20px;border:0;border-radius:7px;cursor:pointer}
+#preview{width:200px;height:150px;background:#2563eb;margin:30px auto}
+pre{background:#1e293b;color:#86efac;padding:15px;border-radius:8px}
+button{padding:11px 18px;background:#2563eb;color:white;border:0;border-radius:7px;cursor:pointer}
 </style>
 </head>
 <body>
 <main>
 <h1>Border Radius Generator</h1>
-<p>Create custom rounded corners for CSS.</p>
-<label>Top Left</label>
-<input id="tl" type="range" min="0" max="100" value="20" oninput="update()">
-<label>Top Right</label>
-<input id="tr" type="range" min="0" max="100" value="20" oninput="update()">
-<label>Bottom Right</label>
-<input id="br" type="range" min="0" max="100" value="20" oninput="update()">
-<label>Bottom Left</label>
-<input id="bl" type="range" min="0" max="100" value="20" oninput="update()">
+<div id="controls"></div>
 <div id="preview"></div>
-<p id="code"></p>
-<button onclick="copyCode()">Copy CSS</button>
+<pre id="code"></pre>
+<button onclick="copyCSS()">Copy CSS</button>
 <p id="status"></p>
 </main>
 <script>
+const controls=document.getElementById("controls");
+["Top Left","Top Right","Bottom Right","Bottom Left"].forEach((name,i)=>{
+ controls.innerHTML+=`
+ <label>${name}: <span id="v${i}">20</span>px</label>
+ <input type="range" min="0" max="100" value="20" id="r${i}">
+ `;
+});
 function update(){
- const radius=["tl","tr","br","bl"].map(
- id=>document.getElementById(id).value+"px").join(" ");
- document.getElementById("preview").style.borderRadius=radius;
- document.getElementById("code").textContent="border-radius: "+radius+";";
- document.getElementById("status").textContent="";
+ const values=[0,1,2,3].map(i=>{
+  const v=document.getElementById("r"+i).value;
+  document.getElementById("v"+i).textContent=v;
+  return v;
+ });
+ const css=`border-radius: ${values.join("px ")}px;`;
+ document.getElementById("preview").style.borderRadius=
+ values.map(v=>v+"px").join(" ");
+ document.getElementById("code").textContent=css;
 }
-async function copyCode(){
+[0,1,2,3].forEach(i=>{
+ document.getElementById("r"+i).addEventListener("input",update);
+});
+async function copyCSS(){
  try{
   await navigator.clipboard.writeText(document.getElementById("code").textContent);
   document.getElementById("status").textContent="CSS copied!";
  }catch{
-  document.getElementById("status").textContent="Please copy manually.";
+  document.getElementById("status").textContent="Copy manually from the code area.";
  }
 }
 update();
